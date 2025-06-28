@@ -12,6 +12,7 @@ import re
 import sys
 from functools import wraps
 from itertools import chain
+from fake_useragent import UserAgent
 
 try:
     from urllib.parse import unquote, urljoin, urlsplit
@@ -163,7 +164,10 @@ def lazyProperty(func):
 
 
 def getSoup(*args, **kwargs):
-    r = requests.get(*args, **kwargs)
+    ua = UserAgent()
+    headers = {'User-Agent': ua.random}
+
+    r = requests.get(*args, **kwargs, headers=headers)
     return toSoup(r)
 
 REMOVE_RE = re.compile(br"^</td>\s*$", re.MULTILINE)
